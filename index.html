@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aion app driver</title>
+<style>
+:root{--g:#00b86b;--d:#0f2a1d;--bg:#f3f6f4;--c:#fff;--t:#1b1f1d;--m:#6b7570;--r:#e5484d}
+*{box-sizing:border-box;font-family:Tahoma,Vazirmatn,sans-serif}
+body{margin:0;background:var(--bg);color:var(--t)}
+.screen{display:none;min-height:100vh;max-width:480px;margin:auto;background:var(--bg);position:relative}
+.screen.on{display:block}
+.logo{font-size:30px;font-weight:bold;color:var(--g);direction:ltr;text-align:center}
+.card{background:var(--c);border-radius:16px;padding:18px;margin:14px;box-shadow:0 2px 10px #0001}
+input{width:100%;padding:13px;margin:6px 0;border:1px solid #d5dcd8;border-radius:12px;font-size:15px;background:#fff}
+input:focus{outline:2px solid var(--g);border-color:var(--g)}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:var(--g);color:#fff;font-size:16px;font-weight:bold;margin-top:8px;cursor:pointer}
+button.alt{background:#fff;color:var(--g);border:2px solid var(--g)}
+button.dark{background:var(--d)}
+.err{color:var(--r);font-size:13px;min-height:18px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--c);box-shadow:0 1px 6px #0001}
+.avatar{width:46px;height:46px;border-radius:50%;border:2px solid var(--g);background:#e8f7ef;cursor:pointer;padding:0;overflow:visible;position:relative;margin:0}
+.avatar svg{border-radius:50%}
+.badge{position:absolute;top:-2px;left:-2px;width:14px;height:14px;background:var(--r);border-radius:50%;border:2px solid #fff;display:none}
+iframe{width:100%;height:320px;border:0;border-radius:14px;background:#dfe6e2}
+.pin{display:flex;gap:8px;align-items:center}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid #eef1ef;cursor:pointer}
+.row:last-child{border:0}
+.row a{color:var(--g);font-weight:bold;direction:ltr;text-decoration:none}
+.big{width:90px;height:90px;border-radius:50%;background:#e8f7ef;border:3px solid var(--g);margin:10px auto;display:block;overflow:hidden}
+.info{text-align:center;color:var(--m);font-size:14px}
+.back{background:none;color:var(--g);width:auto;margin:0;padding:6px 10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--d);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;display:none;z-index:2000;max-width:90%;text-align:center}
+#meta{font-size:14px;color:var(--m);text-align:center;margin:6px 0}
+.pay{display:flex;gap:10px;margin:10px 0}
+.pay label{flex:1;border:2px solid #d5dcd8;border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:bold;font-size:14px}
+.pay input{display:none}
+.pay label.sel{border-color:var(--g);background:#e8f7ef;color:var(--g)}
+.cardbox{background:#f3f6f4;border-radius:12px;padding:12px;margin-bottom:6px;font-size:14px;line-height:2;display:none}
+.cp{width:auto;display:inline-block;margin:0 6px;padding:4px 14px;font-size:13px;border-radius:8px}
+.cardbox b{direction:ltr;display:inline-block;letter-spacing:1px}
+.item{padding:12px 4px;border-bottom:1px solid #eef1ef;font-size:14px;line-height:1.9}
+.item:last-child{border:0}
+.item small{color:var(--m);display:block}
+.empty{text-align:center;color:var(--m);padding:30px 0}
+.linkbox{direction:ltr;text-align:center;background:#f3f6f4;border-radius:12px;padding:12px;word-break:break-all;font-size:14px;margin:10px 0}
+#irmap{height:52vh;min-height:300px;width:100%}
+.st{padding:8px 16px;font-size:13px;color:var(--m);background:#fff;text-align:center}
+.mini{width:auto;display:inline-block;padding:8px 12px;font-size:13px;margin:6px 4px 0 0;border-radius:10px}
+.req{padding:12px 4px;border-bottom:1px solid #eef1ef;font-size:14px;line-height:1.9}
+.req:last-child{border:0}
+.leaflet-container{font-family:Tahoma,sans-serif}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+<symbol id="person" viewBox="0 0 100 100">
+<rect width="100" height="100" fill="#e8f7ef"/>
+<circle cx="50" cy="36" r="19" fill="#00b86b"/>
+<path d="M12 100c0-26 17-40 38-40s38 14 38 40z" fill="#00b86b"/>
+</symbol>
+</svg>
+
+<!-- ثبت نام -->
+<section class="screen on" id="signup">
+  <div style="padding-top:40px"><div class="logo">Aion app driver</div>
+  <p class="info">ثبت نام سفیران آیون</p></div>
+  <div class="card">
+    <input id="fn" placeholder="نام">
+    <input id="ln" placeholder="نام خانوادگی">
+    <input id="em" type="email" placeholder="ایمیل" style="direction:ltr;text-align:right">
+    <input id="pw" type="password" placeholder="رمز عبور" style="direction:ltr;text-align:right">
+    <input id="pw2" type="password" placeholder="تکرار رمز عبور" style="direction:ltr;text-align:right">
+    <div class="err" id="serr"></div>
+    <button id="regBtn">ثبت نام</button>
+  </div>
+</section>
+
+<!-- صفحه اصلی -->
+<section class="screen" id="home">
+  <div class="top">
+    <button class="avatar" id="profBtn" aria-label="پروفایل"><svg width="100%" height="100%"><use href="#person"/></svg><span class="badge" id="badge"></span></button>
+    <div class="logo" style="font-size:22px">Aion app driver</div>
+    <div style="width:46px"></div>
+  </div>
+  <div class="st" id="conn">در حال اتصال...</div>
+  <div id="irmap"></div>
+  <div class="card"><b>درخواست های سفر <span id="cnt"></span></b><div id="reqList"><div class="empty">درخواستی وجود ندارد</div></div></div>
+</section>
+
+<!-- پروفایل -->
+<section class="screen" id="profile">
+  <div class="top"><button class="back" data-go="home">‹ بازگشت</button><b>پروفایل</b><div style="width:70px"></div></div>
+  <div class="card">
+    <svg class="big"><use href="#person"/></svg>
+    <h3 id="pname" style="text-align:center;margin:6px 0"></h3>
+    <div class="info" id="pmail"></div>
+  </div>
+  <div class="card">
+    <b>پشتیبانی</b>
+    <div class="row"><span>تماس با موبایل پشتیبانی</span><a href="tel:0999368097">0999368097</a></div>
+    <div class="row"><span>تماس با تلفن ثابت</span><a href="tel:02144785143">02144785143</a></div>
+    <div class="row" id="supSms"><span>پیامک به پشتیبانی</span><span>‹</span></div>
+    <div class="row" id="supBale"><span>پیام در بله به پشتیبانی</span><span>‹</span></div>
+  </div>
+  <div class="card">
+    <div class="row" data-go="trips"><span>سفرهای من</span><span>‹</span></div>
+    <div class="row" data-go="notifs"><span>اعلان ها <b id="ncount" style="color:var(--r)"></b></span><span>‹</span></div>
+    <div class="row" data-go="invite"><span>دعوت همکاران</span><span>‹</span></div>
+    <div class="row" data-go="about"><span>درباره Aion app driver</span><span>‹</span></div>
+  </div>
+  <div style="padding:0 14px 30px"><button style="background:var(--r)" id="outBtn">خروج از حساب</button></div>
+</section>
+
+<!-- سفرهای من -->
+<section class="screen" id="trips">
+  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>سفرهای من</b><div style="width:70px"></div></div>
+  <div class="card" id="tripList"></div>
+  <div style="padding:0 14px"><button class="alt" id="clrTrips">پاک کردن سفرها</button></div>
+</section>
+
+<!-- اعلان ها -->
+<section class="screen" id="notifs">
+  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>اعلان ها</b><div style="width:70px"></div></div>
+  <div class="card" id="notifList"></div>
+</section>
+
+<!-- دعوت همکاران -->
+<section class="screen" id="invite">
+  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>دعوت همکاران</b><div style="width:70px"></div></div>
+  <div class="card">
+    <p class="info">همکارانت را به Aion app driver دعوت کن. لینک زیر را برایشان بفرست:</p>
+    <div class="linkbox" id="invLink"></div>
+    <button id="shareBtn">اشتراک گذاری لینک</button>
+    <button class="alt" id="copyBtn">کپی لینک</button>
+  </div>
+</section>
+
+<!-- درباره -->
+<section class="screen" id="about">
+  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>درباره Aion app driver</b><div style="width:70px"></div></div>
+  <div class="card" style="line-height:2">
+    <div class="logo">Aion app driver</div>
+    <p>Aion app driver برنامه مخصوص سفیران آیون است. هر درخواست سفری که مسافران در برنامه Aion_app ثبت کنند، همان لحظه روی نقشه ایران نمایش داده می‌شود و می‌توانید مسیر را ببینید و سفر را قبول کنید.</p>
+    <p>نسخه ۱.۰</p>
+    <p>پشتیبانی: <a href="tel:0999368097" style="color:var(--g)">0999368097</a> | <a href="tel:02144785143" style="color:var(--g)">02144785143</a></p>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== تنظیمات ===== */
+const PHONE="0999368097";
+const INVITE_LINK="";            // لینک دعوت همکاران را اینجا بگذارید
+/* =================== */
+
+const $=id=>document.getElementById(id);
+let user=null, coords={o:null,d:null}, current='signup';
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');current=id;window.scrollTo(0,0);if(id==='trips')renderTrips();if(id==='home'&&window.map)setTimeout(()=>map.invalidateSize(),100);if(id==='notifs')renderNotifs();if(id==='invite')$('invLink').textContent=link();}
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2800)}
+function get(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v}catch(e){return def}}
+function set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function fmt(ts){return new Date(ts).toLocaleString('fa-IR')}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function link(){return INVITE_LINK||location.href.split('#')[0]}
+
+document.querySelectorAll('[data-go]').forEach(e=>e.onclick=()=>show(e.dataset.go));
+
+/* اعلان ها */
+function addNotif(text){const n=get('aiond_notifs',[]);n.unshift({t:Date.now(),text,read:false});set('aiond_notifs',n.slice(0,50));updBadge()}
+function updBadge(){const c=get('aiond_notifs',[]).filter(n=>!n.read).length;$('badge').style.display=c?'block':'none';$('ncount').textContent=c?'('+c+')':''}
+function renderNotifs(){
+  const n=get('aiond_notifs',[]);
+  $('notifList').innerHTML=n.length?n.map(x=>'<div class="item">'+esc(x.text)+'<small>'+fmt(x.t)+'</small></div>').join(''):'<div class="empty">اعلانی وجود ندارد</div>';
+  n.forEach(x=>x.read=true);set('aiond_notifs',n);updBadge();
+}
+
+/* سفرها */
+function renderTrips(){
+  const t=get('aiond_trips',[]);
+  $('tripList').innerHTML=t.length?t.map(x=>'<div class="item"><b>مسافر:</b> '+esc(x.p)+'<br><b>از:</b> '+esc(x.o)+'<br><b>به:</b> '+esc(x.d)+'<small>'+fmt(x.t)+'</small></div>').join(''):'<div class="empty">هنوز سفری قبول نکرده اید</div>';
+  $('clrTrips').style.display=t.length?'block':'none';
+}
+$('clrTrips').onclick=()=>{set('aiond_trips',[]);renderTrips();toast('سفرها پاک شد')};
+
+/* ثبت نام */
+function enter(){
+  $('pname').textContent=user.fn+' '+user.ln;
+  $('pmail').textContent=user.em;
+  updBadge();show('home');initMap();
+}
+$('regBtn').onclick=()=>{
+  const fn=$('fn').value.trim(),ln=$('ln').value.trim(),em=$('em').value.trim(),pw=$('pw').value,pw2=$('pw2').value;
+  let e='';
+  if(!fn||!ln)e='نام و نام خانوادگی را وارد کنید';
+  else if(!/^\S+@\S+\.\S+$/.test(em))e='ایمیل معتبر وارد کنید';
+  else if(pw.length<6)e='رمز عبور حداقل ۶ کاراکتر باشد';
+  else if(pw!==pw2)e='رمز عبور و تکرار آن یکسان نیست';
+  $('serr').textContent=e;
+  if(e)return;
+  user={fn,ln,em};set('aiond_user',user);
+  addNotif('به Aion app driver خوش آمدید '+fn+' عزیز');
+  enter();
+};
+$('profBtn').onclick=()=>show('profile');
+$('outBtn').onclick=()=>{try{localStorage.removeItem('aiond_user')}catch(e){}user=null;['fn','ln','em','pw','pw2'].forEach(i=>$(i).value='');show('signup')};
+
+/* پشتیبانی */
+const bleUrl='https://ble.ir/+98'+PHONE.slice(1);
+$('supSms').onclick=()=>{location.href='sms:'+PHONE};
+$('supBale').onclick=()=>window.open(bleUrl,'_blank');
+
+/* دعوت همکاران */
+const invText=()=>'به سفیران آیون بپیوند:\n'+link();
+$('shareBtn').onclick=async()=>{
+  if(navigator.share){try{await navigator.share({title:'Aion app driver',text:'به سفیران آیون بپیوند',url:link()})}catch(e){}}
+  else{copyTxt(invText());toast('لینک کپی شد')}
+};
+$('copyBtn').onclick=()=>{copyTxt(link());toast('لینک کپی شد')};
+async function copyTxt(t){
+  try{await navigator.clipboard.writeText(t);return true}catch(e){
+    const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();
+    try{document.execCommand('copy')}catch(x){}a.remove();return true}
+}
+
+function pay(){return ''}
+
+
+/* نقشه و درخواست ها */
+const TOPIC="aion-requests-k7x2q9m4"; // باید در برنامه مسافر هم همین باشد
+const EXPIRE=30*60*1000;
+let map,markers={},reqs={},done={},es;
+function initMap(){
+  if(map)return;
+  map=L.map('irmap').setView([32.4,53.7],5);
+  window.map=map;
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  setTimeout(()=>map.invalidateSize(),200);
+  connect();
+}
+function beep(){
+  try{navigator.vibrate&&navigator.vibrate([200,100,200]);
+    const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(c.currentTime+.25)}catch(e){}
+}
+function connect(){
+  try{
+    if(es)es.close();
+    es=new EventSource('https://ntfy.sh/'+TOPIC+'/sse?since=30m');
+    es.onopen=()=>$('conn').textContent='متصل | درخواست ها لحظه ای نمایش داده می شود';
+    es.onerror=()=>$('conn').textContent='در حال اتصال مجدد...';
+    es.onmessage=e=>{try{
+      const d=JSON.parse(e.data);if(d.event!=='message')return;
+      handle(JSON.parse(d.message));
+    }catch(x){}};
+  }catch(e){$('conn').textContent='اتصال برقرار نشد'}
+}
+function handle(m){
+  if(m.type==='accept'){removeReq(m.id);done[m.id]=1;return}
+  if(m.type!=='req'||reqs[m.id]||done[m.id]||Date.now()-m.t>EXPIRE)return;
+  reqs[m.id]=m;
+  const mk=L.circleMarker(m.oc,{radius:11,color:'#fff',weight:3,fillColor:'#00b86b',fillOpacity:1}).addTo(map);
+  mk.bindPopup(()=>popHtml(m));
+  markers[m.id]=mk;
+  render();
+  if(Date.now()-m.t<60000){
+    beep();addNotif('درخواست سفر جدید از '+m.o+' به '+m.d);toast('درخواست سفر جدید');
+    map.flyTo(m.oc,Math.max(map.getZoom(),11));mk.openPopup();
+  }
+}
+function gUrl(m){return 'https://www.google.com/maps/dir/?api=1&origin='+m.oc[0]+','+m.oc[1]+'&destination='+m.dc[0]+','+m.dc[1]}
+function bUrl(m){return 'https://balad.ir/directions/driving?origin='+m.oc[0]+','+m.oc[1]+'&destination='+m.dc[0]+','+m.dc[1]}
+function popHtml(m){
+  return '<div dir="rtl" style="font-size:13px;line-height:1.8"><b>'+esc(m.name)+'</b><br>از: '+esc(m.o)+'<br>به: '+esc(m.d)+'<br>'+
+  '<a href="'+gUrl(m)+'" target="_blank">مسیر در گوگل مپ</a> | <a href="'+bUrl(m)+'" target="_blank">مسیر در بلد</a><br>'+
+  '<button class="mini" onclick="accept(\''+m.id+'\')">قبول سفر</button></div>';
+}
+function render(){
+  const a=Object.values(reqs).sort((x,y)=>y.t-x.t);
+  $('cnt').textContent=a.length?'('+a.length+')':'';
+  $('reqList').innerHTML=a.length?a.map(m=>'<div class="req"><b>'+esc(m.name)+'</b> <small style="color:var(--m)">'+new Date(m.t).toLocaleTimeString('fa-IR')+'</small><br>از: '+esc(m.o)+'<br>به: '+esc(m.d)+'<br>'+
+   '<button class="mini alt" onclick="focusReq(\''+m.id+'\')">نمایش روی نقشه</button>'+
+   '<a class="mini" style="background:var(--d);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;padding:8px 12px" href="'+bUrl(m)+'" target="_blank">بلد</a>'+
+   '<a class="mini" style="background:var(--d);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;padding:8px 12px" href="'+gUrl(m)+'" target="_blank">گوگل مپ</a>'+
+   '<button class="mini" onclick="accept(\''+m.id+'\')">قبول سفر</button></div>').join(''):'<div class="empty">درخواستی وجود ندارد</div>';
+}
+function focusReq(id){const m=reqs[id];if(!m)return;window.scrollTo(0,0);map.flyTo(m.oc,13);markers[id].openPopup()}
+function removeReq(id){if(markers[id]){map.removeLayer(markers[id]);delete markers[id]}delete reqs[id];render()}
+function accept(id){
+  const m=reqs[id];if(!m)return;
+  done[id]=1;
+  fetch('https://ntfy.sh/'+TOPIC,{method:'POST',body:JSON.stringify({type:'accept',id,driver:user.fn+' '+user.ln})}).catch(()=>{});
+  const t=get('aiond_trips',[]);t.unshift({t:Date.now(),p:m.name,o:m.o,d:m.d});set('aiond_trips',t.slice(0,100));
+  addNotif('سفر '+m.name+' را قبول کردید');
+  map.closePopup();removeReq(id);
+  toast('سفر قبول شد؛ مسیر را باز می کنم');
+  window.open(bUrl(m),'_blank');
+}
+setInterval(()=>{const n=Date.now();Object.values(reqs).forEach(m=>{if(n-m.t>EXPIRE)removeReq(m.id)})},30000);
+
+user=get('aiond_user',null);
+if(user)enter();
+</script>
+</body>
+</html>
