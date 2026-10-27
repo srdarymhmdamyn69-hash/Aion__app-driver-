@@ -1,311 +1,319 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aion app driver</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>آیون سفیر</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap">
 <style>
-:root{--g:#00b86b;--d:#0f2a1d;--bg:#f3f6f4;--c:#fff;--t:#1b1f1d;--m:#6b7570;--r:#e5484d}
-*{box-sizing:border-box;font-family:Tahoma,Vazirmatn,sans-serif}
-body{margin:0;background:var(--bg);color:var(--t)}
-.screen{display:none;min-height:100vh;max-width:480px;margin:auto;background:var(--bg);position:relative}
-.screen.on{display:block}
-.logo{font-size:30px;font-weight:bold;color:var(--g);direction:ltr;text-align:center}
-.card{background:var(--c);border-radius:16px;padding:18px;margin:14px;box-shadow:0 2px 10px #0001}
-input{width:100%;padding:13px;margin:6px 0;border:1px solid #d5dcd8;border-radius:12px;font-size:15px;background:#fff}
-input:focus{outline:2px solid var(--g);border-color:var(--g)}
-button{width:100%;padding:14px;border:0;border-radius:12px;background:var(--g);color:#fff;font-size:16px;font-weight:bold;margin-top:8px;cursor:pointer}
-button.alt{background:#fff;color:var(--g);border:2px solid var(--g)}
-button.dark{background:var(--d)}
-.err{color:var(--r);font-size:13px;min-height:18px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--c);box-shadow:0 1px 6px #0001}
-.avatar{width:46px;height:46px;border-radius:50%;border:2px solid var(--g);background:#e8f7ef;cursor:pointer;padding:0;overflow:visible;position:relative;margin:0}
-.avatar svg{border-radius:50%}
-.badge{position:absolute;top:-2px;left:-2px;width:14px;height:14px;background:var(--r);border-radius:50%;border:2px solid #fff;display:none}
-iframe{width:100%;height:320px;border:0;border-radius:14px;background:#dfe6e2}
-.pin{display:flex;gap:8px;align-items:center}
-.dot{width:12px;height:12px;border-radius:50%;flex:none}
-.row{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid #eef1ef;cursor:pointer}
-.row:last-child{border:0}
-.row a{color:var(--g);font-weight:bold;direction:ltr;text-decoration:none}
-.big{width:90px;height:90px;border-radius:50%;background:#e8f7ef;border:3px solid var(--g);margin:10px auto;display:block;overflow:hidden}
-.info{text-align:center;color:var(--m);font-size:14px}
-.back{background:none;color:var(--g);width:auto;margin:0;padding:6px 10px}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--d);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;display:none;z-index:2000;max-width:90%;text-align:center}
-#meta{font-size:14px;color:var(--m);text-align:center;margin:6px 0}
-.pay{display:flex;gap:10px;margin:10px 0}
-.pay label{flex:1;border:2px solid #d5dcd8;border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:bold;font-size:14px}
-.pay input{display:none}
-.pay label.sel{border-color:var(--g);background:#e8f7ef;color:var(--g)}
-.cardbox{background:#f3f6f4;border-radius:12px;padding:12px;margin-bottom:6px;font-size:14px;line-height:2;display:none}
-.cp{width:auto;display:inline-block;margin:0 6px;padding:4px 14px;font-size:13px;border-radius:8px}
-.cardbox b{direction:ltr;display:inline-block;letter-spacing:1px}
-.item{padding:12px 4px;border-bottom:1px solid #eef1ef;font-size:14px;line-height:1.9}
-.item:last-child{border:0}
-.item small{color:var(--m);display:block}
-.empty{text-align:center;color:var(--m);padding:30px 0}
-.linkbox{direction:ltr;text-align:center;background:#f3f6f4;border-radius:12px;padding:12px;word-break:break-all;font-size:14px;margin:10px 0}
-#irmap{height:52vh;min-height:300px;width:100%}
-.st{padding:8px 16px;font-size:13px;color:var(--m);background:#fff;text-align:center}
-.mini{width:auto;display:inline-block;padding:8px 12px;font-size:13px;margin:6px 4px 0 0;border-radius:10px}
-.req{padding:12px 4px;border-bottom:1px solid #eef1ef;font-size:14px;line-height:1.9}
-.req:last-child{border:0}
-.leaflet-container{font-family:Tahoma,sans-serif}
+:root{--bg:#f4f7f6;--card:#fff;--ink:#12302e;--mute:#5d7573;--line:#d9e3e1;--brand:#0f6b63;--brand-ink:#fff;--accent:#f5b428;--err:#c0392b;--ok:#1f9d55;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1a19;--card:#152826;--ink:#e8f3f1;--mute:#93aeab;--line:#26403d;--brand:#2fb5a8;--brand-ink:#06201d;--accent:#f5b428;--err:#ff8a7a;--ok:#4cd08a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.7;min-height:100vh}
+.wrap{max-width:480px;margin:0 auto;padding:16px}
+h1,h2,h3{margin:0}
+.logo{font-weight:800;font-size:24px;letter-spacing:-.5px}
+.logo i{font-style:normal;background:var(--ink);border-radius:8px;padding:0 8px;margin-inline-start:6px;color:#f5b428}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+input,select{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.btn{width:100%;font:inherit;font-weight:600;border:0;border-radius:12px;padding:13px;margin-top:16px;background:var(--brand);color:var(--brand-ink);cursor:pointer}
+.btn:disabled{opacity:.6;cursor:default}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:8px}
+.btn.danger{color:var(--err)}
+.err{color:var(--err);font-size:13px;min-height:20px;margin-top:8px}
+.mute{color:var(--mute)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header.top{display:flex;align-items:center;justify-content:space-between}
+.avatar{width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);background:var(--card);color:var(--ink);font:inherit;font-weight:800;font-size:18px;cursor:pointer}
+.menu{position:absolute;top:70px;inset-inline-start:16px;width:min(300px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);z-index:5;overflow:hidden}
+.menu .who{padding:14px 16px;border-bottom:1px solid var(--line)}
+.menu .who b{display:block}.menu .who span{font-size:13px;color:var(--mute);word-break:break-all}
+.menu button{display:block;width:100%;text-align:start;font:inherit;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 16px;color:var(--ink);cursor:pointer}
+.menu button:last-child{border:0;color:var(--err)}
+.hide{display:none!important}
+.sw{font:inherit;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:8px 18px;background:var(--bg);color:var(--mute);cursor:pointer;min-width:96px}
+.sw.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.sw:disabled{opacity:.6;cursor:default}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.stats div{background:var(--bg);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font-size:20px;color:var(--brand)}
+.stats small{color:var(--mute)}
+.price{text-align:center;padding:14px;border-radius:12px;background:var(--bg);margin-top:14px}
+.price b{font-size:28px;display:block;color:var(--brand)}
+.price small{color:var(--mute)}
+.badge{display:inline-block;font-size:13px;font-weight:600;padding:2px 12px;border-radius:999px;background:var(--accent);color:#12302e}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.links a{display:block;text-align:center;text-decoration:none;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:10px 4px;color:var(--ink)}
+.panel{position:fixed;inset:0;background:var(--bg);z-index:10;overflow:auto;padding:16px}
+.panel .in{max-width:480px;margin:0 auto}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}
+.item small{color:var(--mute);display:block}
+a.call{color:var(--brand);font-weight:600;text-decoration:none;direction:ltr;unicode-bidi:embed}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;z-index:20;max-width:90%;text-align:center}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute">
-<symbol id="person" viewBox="0 0 100 100">
-<rect width="100" height="100" fill="#e8f7ef"/>
-<circle cx="50" cy="36" r="19" fill="#00b86b"/>
-<path d="M12 100c0-26 17-40 38-40s38 14 38 40z" fill="#00b86b"/>
-</symbol>
-</svg>
-
-<!-- ثبت نام -->
-<section class="screen on" id="signup">
-  <div style="padding-top:40px"><div class="logo">Aion app driver</div>
-  <p class="info">ثبت نام سفیران آیون</p></div>
-  <div class="card">
-    <input id="fn" placeholder="نام">
-    <input id="ln" placeholder="نام خانوادگی">
-    <input id="em" type="email" placeholder="ایمیل" style="direction:ltr;text-align:right">
-    <input id="pw" type="password" placeholder="رمز عبور" style="direction:ltr;text-align:right">
-    <input id="pw2" type="password" placeholder="تکرار رمز عبور" style="direction:ltr;text-align:right">
-    <div class="err" id="serr"></div>
-    <button id="regBtn">ثبت نام</button>
-  </div>
-</section>
-
-<!-- صفحه اصلی -->
-<section class="screen" id="home">
-  <div class="top">
-    <button class="avatar" id="profBtn" aria-label="پروفایل"><svg width="100%" height="100%"><use href="#person"/></svg><span class="badge" id="badge"></span></button>
-    <div class="logo" style="font-size:22px">Aion app driver</div>
-    <div style="width:46px"></div>
-  </div>
-  <div class="st" id="conn">در حال اتصال...</div>
-  <div id="irmap"></div>
-  <div class="card"><b>درخواست های سفر <span id="cnt"></span></b><div id="reqList"><div class="empty">درخواستی وجود ندارد</div></div></div>
-</section>
-
-<!-- پروفایل -->
-<section class="screen" id="profile">
-  <div class="top"><button class="back" data-go="home">‹ بازگشت</button><b>پروفایل</b><div style="width:70px"></div></div>
-  <div class="card">
-    <svg class="big"><use href="#person"/></svg>
-    <h3 id="pname" style="text-align:center;margin:6px 0"></h3>
-    <div class="info" id="pmail"></div>
-  </div>
-  <div class="card">
-    <b>پشتیبانی</b>
-    <div class="row"><span>تماس با موبایل پشتیبانی</span><a href="tel:0999368097">0999368097</a></div>
-    <div class="row"><span>تماس با تلفن ثابت</span><a href="tel:02144785143">02144785143</a></div>
-    <div class="row" id="supSms"><span>پیامک به پشتیبانی</span><span>‹</span></div>
-    <div class="row" id="supBale"><span>پیام در بله به پشتیبانی</span><span>‹</span></div>
-  </div>
-  <div class="card">
-    <div class="row" data-go="trips"><span>سفرهای من</span><span>‹</span></div>
-    <div class="row" data-go="notifs"><span>اعلان ها <b id="ncount" style="color:var(--r)"></b></span><span>‹</span></div>
-    <div class="row" data-go="invite"><span>دعوت همکاران</span><span>‹</span></div>
-    <div class="row" data-go="about"><span>درباره Aion app driver</span><span>‹</span></div>
-  </div>
-  <div style="padding:0 14px 30px"><button style="background:var(--r)" id="outBtn">خروج از حساب</button></div>
-</section>
-
-<!-- سفرهای من -->
-<section class="screen" id="trips">
-  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>سفرهای من</b><div style="width:70px"></div></div>
-  <div class="card" id="tripList"></div>
-  <div style="padding:0 14px"><button class="alt" id="clrTrips">پاک کردن سفرها</button></div>
-</section>
-
-<!-- اعلان ها -->
-<section class="screen" id="notifs">
-  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>اعلان ها</b><div style="width:70px"></div></div>
-  <div class="card" id="notifList"></div>
-</section>
-
-<!-- دعوت همکاران -->
-<section class="screen" id="invite">
-  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>دعوت همکاران</b><div style="width:70px"></div></div>
-  <div class="card">
-    <p class="info">همکارانت را به Aion app driver دعوت کن. لینک زیر را برایشان بفرست:</p>
-    <div class="linkbox" id="invLink"></div>
-    <button id="shareBtn">اشتراک گذاری لینک</button>
-    <button class="alt" id="copyBtn">کپی لینک</button>
-  </div>
-</section>
-
-<!-- درباره -->
-<section class="screen" id="about">
-  <div class="top"><button class="back" data-go="profile">‹ بازگشت</button><b>درباره Aion app driver</b><div style="width:70px"></div></div>
-  <div class="card" style="line-height:2">
-    <div class="logo">Aion app driver</div>
-    <p>Aion app driver برنامه مخصوص سفیران آیون است. هر درخواست سفری که مسافران در برنامه Aion_app ثبت کنند، همان لحظه روی نقشه ایران نمایش داده می‌شود و می‌توانید مسیر را ببینید و سفر را قبول کنید.</p>
-    <p>نسخه ۱.۰</p>
-    <p>پشتیبانی: <a href="tel:0999368097" style="color:var(--g)">0999368097</a> | <a href="tel:02144785143" style="color:var(--g)">02144785143</a></p>
-  </div>
-</section>
-
-<div class="toast" id="toast"></div>
-
+<div class="wrap" id="app"></div>
 <script>
-/* ===== تنظیمات ===== */
-const PHONE="0999368097";
-const INVITE_LINK="";            // لینک دعوت همکاران را اینجا بگذارید
-/* =================== */
+/* ====== تنظیمات Supabase ======
+   قبل از اجرا، فایل supabase-setup.sql را یک بار در SQL Editor اجرا کنید.
+   فقط کلید publishable/anon اینجا قرار می‌گیرد؛ کلید secret/service_role را هرگز نگذارید. */
+const SUPABASE_URL="https://pujfzkkwvuivsejgzvoa.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_WpUCN-na0WtSjDOyOiuvog_GC5rsKrV";
+const SUPPORT=["09909360 97".replace(" ",""),"02144785143"];
+const sb=(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+const cfgMsg=!SUPABASE_URL||!SUPABASE_ANON_KEY?"آدرس پروژه یا کلید Supabase تنظیم نشده است (ابتدای اسکریپت).":!window.supabase?"کتابخانه Supabase بارگذاری نشد؛ اینترنت را بررسی کنید.":"";
+const fa=n=>Number(n).toLocaleString("fa-IR");
+const $=s=>document.querySelector(s);
+const digits=s=>s.replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=s=>+digits(s).replace(/\D/g,"");
+const RS="*, passenger:profiles!rides_passenger_id_fkey(name,phone)";
+const ACT=["accepted","arrived","started"];
+let me=null,mode="register",active=null,reqs=[],stats=null,sig="",fin=false,poller=null,notice="";
 
-const $=id=>document.getElementById(id);
-let user=null, coords={o:null,d:null}, current='signup';
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.append(e);setTimeout(()=>e.remove(),3000)}
+async function q(p){const{data,error}=await p;if(error)throw error;return data}
+function fe(e){const m=(e&&e.message)||"";
+  if(/Invalid login/i.test(m))return"ایمیل یا رمز عبور درست نیست.";
+  if(/already registered/i.test(m))return"با این ایمیل قبلاً ثبت‌نام شده است.";
+  if(/not confirmed/i.test(m))return"ایمیل شما هنوز تأیید نشده است؛ لینک ارسال‌شده را باز کنید.";
+  if(/rate limit/i.test(m))return"تعداد تلاش‌ها زیاد بود؛ کمی بعد دوباره امتحان کنید.";
+  if(/rides_one_active/i.test(m))return"شما یک سفر فعال دارید.";
+  if(/fetch|network/i.test(m))return"اتصال به سرور برقرار نشد.";
+  return/[\u0600-\u06FF]/.test(m)?m:"خطا: "+m}
+async function logout(){me=null;active=null;reqs=[];stats=null;sig="";fin=false;clearInterval(poller);try{if(sb)await sb.auth.signOut()}catch(e){}auth()}
+if(sb)sb.auth.onAuthStateChange(ev=>{if(ev==="SIGNED_OUT"&&me){me=null;clearInterval(poller);notice="نشست شما تمام شد؛ دوباره وارد شوید.";auth()}});
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');current=id;window.scrollTo(0,0);if(id==='trips')renderTrips();if(id==='home'&&window.map)setTimeout(()=>map.invalidateSize(),100);if(id==='notifs')renderNotifs();if(id==='invite')$('invLink').textContent=link();}
-function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2800)}
-function get(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v}catch(e){return def}}
-function set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-function fmt(ts){return new Date(ts).toLocaleString('fa-IR')}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function link(){return INVITE_LINK||location.href.split('#')[0]}
-
-document.querySelectorAll('[data-go]').forEach(e=>e.onclick=()=>show(e.dataset.go));
-
-/* اعلان ها */
-function addNotif(text){const n=get('aiond_notifs',[]);n.unshift({t:Date.now(),text,read:false});set('aiond_notifs',n.slice(0,50));updBadge()}
-function updBadge(){const c=get('aiond_notifs',[]).filter(n=>!n.read).length;$('badge').style.display=c?'block':'none';$('ncount').textContent=c?'('+c+')':''}
-function renderNotifs(){
-  const n=get('aiond_notifs',[]);
-  $('notifList').innerHTML=n.length?n.map(x=>'<div class="item">'+esc(x.text)+'<small>'+fmt(x.t)+'</small></div>').join(''):'<div class="empty">اعلانی وجود ندارد</div>';
-  n.forEach(x=>x.read=true);set('aiond_notifs',n);updBadge();
+async function boot(){
+  if(!sb)return auth();
+  try{const{data:{session}}=await sb.auth.getSession();session?await enter(session.user):auth()}
+  catch(e){notice=fe(e);auth()}
 }
-
-/* سفرها */
-function renderTrips(){
-  const t=get('aiond_trips',[]);
-  $('tripList').innerHTML=t.length?t.map(x=>'<div class="item"><b>مسافر:</b> '+esc(x.p)+'<br><b>از:</b> '+esc(x.o)+'<br><b>به:</b> '+esc(x.d)+'<small>'+fmt(x.t)+'</small></div>').join(''):'<div class="empty">هنوز سفری قبول نکرده اید</div>';
-  $('clrTrips').style.display=t.length?'block':'none';
-}
-$('clrTrips').onclick=()=>{set('aiond_trips',[]);renderTrips();toast('سفرها پاک شد')};
-
-/* ثبت نام */
-function enter(){
-  $('pname').textContent=user.fn+' '+user.ln;
-  $('pmail').textContent=user.em;
-  updBadge();show('home');initMap();
-}
-$('regBtn').onclick=()=>{
-  const fn=$('fn').value.trim(),ln=$('ln').value.trim(),em=$('em').value.trim(),pw=$('pw').value,pw2=$('pw2').value;
-  let e='';
-  if(!fn||!ln)e='نام و نام خانوادگی را وارد کنید';
-  else if(!/^\S+@\S+\.\S+$/.test(em))e='ایمیل معتبر وارد کنید';
-  else if(pw.length<6)e='رمز عبور حداقل ۶ کاراکتر باشد';
-  else if(pw!==pw2)e='رمز عبور و تکرار آن یکسان نیست';
-  $('serr').textContent=e;
-  if(e)return;
-  user={fn,ln,em};set('aiond_user',user);
-  addNotif('به Aion app driver خوش آمدید '+fn+' عزیز');
-  enter();
-};
-$('profBtn').onclick=()=>show('profile');
-$('outBtn').onclick=()=>{try{localStorage.removeItem('aiond_user')}catch(e){}user=null;['fn','ln','em','pw','pw2'].forEach(i=>$(i).value='');show('signup')};
-
-/* پشتیبانی */
-const bleUrl='https://ble.ir/+98'+PHONE.slice(1);
-$('supSms').onclick=()=>{location.href='sms:'+PHONE};
-$('supBale').onclick=()=>window.open(bleUrl,'_blank');
-
-/* دعوت همکاران */
-const invText=()=>'به سفیران آیون بپیوند:\n'+link();
-$('shareBtn').onclick=async()=>{
-  if(navigator.share){try{await navigator.share({title:'Aion app driver',text:'به سفیران آیون بپیوند',url:link()})}catch(e){}}
-  else{copyTxt(invText());toast('لینک کپی شد')}
-};
-$('copyBtn').onclick=()=>{copyTxt(link());toast('لینک کپی شد')};
-async function copyTxt(t){
-  try{await navigator.clipboard.writeText(t);return true}catch(e){
-    const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();
-    try{document.execCommand('copy')}catch(x){}a.remove();return true}
-}
-
-function pay(){return ''}
-
-
-/* نقشه و درخواست ها */
-const TOPIC="aion-requests-k7x2q9m4"; // باید در برنامه مسافر هم همین باشد
-const EXPIRE=30*60*1000;
-let map,markers={},reqs={},done={},es;
-function initMap(){
-  if(map)return;
-  map=L.map('irmap').setView([32.4,53.7],5);
-  window.map=map;
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-  setTimeout(()=>map.invalidateSize(),200);
-  connect();
-}
-function beep(){
-  try{navigator.vibrate&&navigator.vibrate([200,100,200]);
-    const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();
-    o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(c.currentTime+.25)}catch(e){}
-}
-function connect(){
+async function enter(u){
   try{
-    if(es)es.close();
-    es=new EventSource('https://ntfy.sh/'+TOPIC+'/sse?since=30m');
-    es.onopen=()=>$('conn').textContent='متصل | درخواست ها لحظه ای نمایش داده می شود';
-    es.onerror=()=>$('conn').textContent='در حال اتصال مجدد...';
-    es.onmessage=e=>{try{
-      const d=JSON.parse(e.data);if(d.event!=='message')return;
-      handle(JSON.parse(d.message));
-    }catch(x){}};
-  }catch(e){$('conn').textContent='اتصال برقرار نشد'}
+    me=await q(sb.from("profiles").select("*").eq("id",u.id).single());
+    if(me.role!=="driver"){me=null;await sb.auth.signOut();notice="این حساب مربوط به آیون اپ (مسافر) است؛ با حساب سفیر وارد شوید.";return auth()}
+    home();
+  }catch(e){me=null;notice=fe(e);auth()}
 }
-function handle(m){
-  if(m.type==='accept'){removeReq(m.id);done[m.id]=1;return}
-  if(m.type!=='req'||reqs[m.id]||done[m.id]||Date.now()-m.t>EXPIRE)return;
-  reqs[m.id]=m;
-  const mk=L.circleMarker(m.oc,{radius:11,color:'#fff',weight:3,fillColor:'#00b86b',fillOpacity:1}).addTo(map);
-  mk.bindPopup(()=>popHtml(m));
-  markers[m.id]=mk;
-  render();
-  if(Date.now()-m.t<60000){
-    beep();addNotif('درخواست سفر جدید از '+m.o+' به '+m.d);toast('درخواست سفر جدید');
-    map.flyTo(m.oc,Math.max(map.getZoom(),11));mk.openPopup();
+
+/* ---------- ورود و ثبت‌نام ---------- */
+function auth(){
+  const reg=mode=="register";
+  $("#app").innerHTML=`
+  <div style="text-align:center;margin-top:24px"><div class="logo">آیون<i>سفیر</i></div><p style="color:var(--mute);margin:6px 0 0">درخواست مسافران را بپذیرید و سفر را مدیریت کنید</p></div>
+  <div class="card">
+    ${reg?`<label>نام و نام خانوادگی</label><input id="name" autocomplete="name">
+    <label>شماره موبایل</label><input id="phone" inputmode="tel" placeholder="09123456789" autocomplete="tel">`:""}
+    <label>ایمیل</label><input id="email" type="email" dir="ltr" ${reg?'placeholder="name@example.com"':""}>
+    ${reg?`<label>مدل خودرو</label><input id="car" placeholder="مثلاً پژو ۲۰۶ سفید">
+    <label>شماره پلاک</label><input id="plate" placeholder="مثلاً ۱۲ ب ۳۴۵ ایران ۶۷">`:""}
+    <label>رمز عبور</label><input id="pass" type="password" autocomplete="${reg?"new-password":"current-password"}">
+    <div class="err" id="err">${esc(notice||cfgMsg)}</div>
+    <button class="btn" id="go">${reg?"ثبت‌نام سفیر و ورود":"ورود به حساب"}</button>
+    <button class="btn alt" id="sw2">${reg?"قبلاً ثبت‌نام کرده‌ام":"ثبت‌نام سفیر جدید"}</button>
+  </div>`;
+  notice="";
+  $("#go").onclick=submitAuth;
+  $("#sw2").onclick=()=>{mode=reg?"login":"register";auth()};
+}
+
+async function submitAuth(){
+  const v=id=>($("#"+id)?digits($("#"+id).value):"");
+  const name=$("#name")?$("#name").value.trim():"",phone=v("phone"),email=v("email").toLowerCase(),pass=$("#pass").value;
+  const car=$("#car")?$("#car").value.trim():"",plate=$("#plate")?$("#plate").value.trim():"";
+  const err=m=>$("#err").textContent=m;
+  if(!sb)return err(cfgMsg);
+  if(mode=="register"&&name.split(/\s+/).length<2)return err("نام و نام خانوادگی را کامل وارد کنید.");
+  if(mode=="register"&&!/^09\d{9}$/.test(phone))return err("شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.");
+  if(!/^\S+@\S+\.\S+$/.test(email))return err("ایمیل معتبر وارد کنید.");
+  if(mode=="register"&&car.length<2)return err("مدل خودرو را وارد کنید.");
+  if(mode=="register"&&plate.length<4)return err("شماره پلاک را وارد کنید.");
+  if(pass.length<6)return err("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+  const b=$("#go");b.disabled=true;err("");
+  try{
+    if(mode=="register"){
+      const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{role:"driver",name,phone,car,plate}}});
+      if(error)throw error;
+      if(!data.session){mode="login";notice="ثبت‌نام انجام شد. ایمیل خود را تأیید کنید و سپس وارد شوید.";return auth()}
+      await enter(data.user);
+    }else{
+      const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+      await enter(data.user);
+    }
+  }catch(e){err(fe(e));b.disabled=false}
+}
+
+/* ---------- صفحه اصلی ---------- */
+function home(){
+  $("#app").innerHTML=`
+  <header class="top">
+    <button class="avatar" id="av" aria-label="پروفایل">${esc((me.name||"؟").trim()[0])}</button>
+    <div class="logo">آیون<i>سفیر</i></div>
+  </header>
+  <div class="menu hide" id="menu">
+    <div class="who"><b>${esc(me.name)}</b><span>${esc(me.email||"")}</span></div>
+    <button data-p="earn">درآمد من</button>
+    <button data-p="trips">سفرهای انجام‌شده</button>
+    <button data-p="support">پیام به پشتیبانی</button>
+    <button data-p="about">درباره آیون سفیر</button>
+    <button id="out">خروج از حساب</button>
+  </div>
+  <div class="card" id="st"></div>
+  <div id="main"></div>`;
+  $("#av").onclick=()=>$("#menu").classList.toggle("hide");
+  $("#menu").onclick=e=>{const p=e.target.dataset.p;if(p){$("#menu").classList.add("hide");panel(p)}};
+  $("#out").onclick=logout;
+  $("#main").onclick=e=>{const b=e.target.closest("[data-a]");if(b)act(b.dataset.a,b)};
+  active=null;reqs=[];stats=null;sig="";fin=false;
+  head();tick(true);clearInterval(poller);poller=setInterval(tick,4000);
+}
+
+function head(){
+  if(!$("#st"))return;
+  const s=stats||{today_trips:0,today_income:0};
+  $("#st").innerHTML=`
+    <div class="row">
+      <div><h2 style="font-size:19px">${me.online?"آنلاین هستید":"آفلاین هستید"}</h2>
+      <small class="mute">${esc(me.car||"")} · پلاک ${esc(me.plate||"")}</small></div>
+      <button class="sw ${me.online?"on":""}" id="swt" role="switch" aria-checked="${!!me.online}" ${active?"disabled":""}>${me.online?"آنلاین":"آفلاین"}</button>
+    </div>
+    <div class="stats"><div><b>${fa(s.today_trips)}</b><small>سفر امروز</small></div><div><b>${fa(s.today_income)}</b><small>درآمد امروز (تومان)</small></div></div>`;
+  $("#swt").onclick=async()=>{
+    const b=$("#swt");b.disabled=true;
+    try{await q(sb.rpc("set_online",{p_online:!me.online}));me.online=!me.online;sig="x";head();tick()}
+    catch(e){toast(fe(e));b.disabled=false}
+  };
+}
+async function loadStats(){try{stats=await q(sb.rpc("driver_stats"));head()}catch(e){}}
+
+async function tick(first){
+  if(!me)return;
+  try{
+    const a=(await q(sb.from("rides").select(RS).eq("driver_id",me.id).in("status",ACT).limit(1)))[0]||null;
+    const l=!a&&me.online?await q(sb.from("rides").select("*").eq("status","pending").order("created_at").limit(20)):[];
+    const s=JSON.stringify([a&&[a.id,a.status,a.price],l.map(x=>x.id)]);
+    if(!first&&s===sig)return;
+    const was=active;
+    sig=s;active=a;reqs=l;if(!a)fin=false;
+    head();main();
+    if(first||was&&!a)loadStats();
+  }catch(e){if(first){toast(fe(e));main()}}
+}
+
+function main(){
+  const m=$("#main");if(!m)return;
+  if(active)return fin?finishView():activeView();
+  if(!me.online){m.innerHTML=`<div class="card"><p class="mute" style="margin:0">برای دریافت سفر، وضعیت خود را روی «آنلاین» بگذارید.</p></div>`;return}
+  if(!reqs.length){m.innerHTML=`<div class="card"><h2 style="font-size:19px">درخواست‌ها</h2><p class="mute" style="margin:6px 0 0">درخواست جدیدی نیست. به‌محض رسیدن درخواست، اینجا نمایش داده می‌شود.</p></div>`;return}
+  m.innerHTML=reqs.map(r=>`<div class="card" data-id="${esc(r.id)}">
+    <div class="row"><h2 style="font-size:19px">درخواست جدید</h2><small class="mute">${r.km?fa(r.km)+" کیلومتر":""}</small></div>
+    <div class="item"><small>مسافر</small><b>${esc(r.passenger_name||"مسافر")}</b></div>
+    <div class="item"><small>مبدأ</small>${esc(r.from_name)}</div>
+    <div class="item"><small>مقصد</small>${esc(r.to_name)}</div>
+    <div class="links">
+      <a target="_blank" rel="noopener" href="${mapLink(null,pt(r,"to"),pt(r,"from"))}">مسیر سفر</a>
+      <a target="_blank" rel="noopener" href="${mapLink(null,pt(r,"from"))}">مسیر من تا مبدأ</a>
+    </div>
+    <label>کرایه (تومان)</label><input class="pr" inputmode="numeric" value="${r.price||""}">
+    <label>زمان رسیدن به مبدأ</label>
+    <select class="eta">${[3,5,10,15,20].map(n=>`<option value="${n}" ${n==5?"selected":""}>حدود ${fa(n)} دقیقه</option>`).join("")}</select>
+    <div class="err"></div>
+    <button class="btn" data-a="accept">پذیرفتن سفر</button>
+    <button class="btn alt danger" data-a="reject">رد درخواست</button>
+  </div>`).join("");
+}
+
+const pt=(r,k)=>r[k+"_lat"]!=null?`${r[k+"_lat"]},${r[k+"_lng"]}`:r[k+"_name"];
+const mapLink=(o,d,from)=>`https://www.google.com/maps/dir/?api=1${(from||o)?`&origin=${encodeURIComponent(from||o)}`:""}&destination=${encodeURIComponent(d)}&travelmode=driving`;
+
+function activeView(){
+  const a=active,toStart=a.status!="started",P=a.passenger||{name:a.passenger_name||"مسافر",phone:""};
+  const lab={accepted:"در مسیر مبدأ",arrived:"منتظر مسافر",started:"در حال سفر"};
+  const nxt={accepted:"رسیدم به مبدأ",arrived:"شروع سفر",started:"پایان سفر"};
+  $("#main").innerHTML=`<div class="card">
+    <div class="row"><h2 style="font-size:19px">سفر فعال</h2><span class="badge">${lab[a.status]||a.status}</span></div>
+    <div class="item"><small>مسافر</small><b>${esc(P.name)}</b> · <a class="call" href="tel:${esc(P.phone||"")}">${esc(P.phone||"")}</a></div>
+    <div class="item"><small>مبدأ</small>${esc(a.from_name)}</div>
+    <div class="item"><small>مقصد</small>${esc(a.to_name)}</div>
+    <div class="price"><small>کرایه توافقی</small><b>${fa(a.price)} تومان</b></div>
+    <div class="links">
+      <a target="_blank" rel="noopener" href="${mapLink(null,pt(a,toStart?"from":"to"))}">${toStart?"مسیر تا مبدأ":"مسیر تا مقصد"}</a>
+      <a href="tel:${esc(P.phone||"")}">تماس با مسافر</a>
+    </div>
+    <div class="err" id="perr"></div>
+    <button class="btn" data-a="next">${nxt[a.status]}</button>
+    <button class="btn alt danger" data-a="cancel">لغو سفر</button>
+  </div>`;
+}
+
+function finishView(){
+  $("#main").innerHTML=`<div class="card">
+    <h2 style="font-size:19px">پایان سفر</h2>
+    <p class="mute" style="margin:6px 0 0">${esc(active.from_name)} ← ${esc(active.to_name)}</p>
+    <label>کرایه نهایی دریافتی (تومان)</label><input id="fp" inputmode="numeric" value="${active.price}">
+    <div class="err" id="perr"></div>
+    <button class="btn" data-a="done">ثبت سفر</button>
+    <button class="btn alt" data-a="back">بازگشت</button>
+  </div>`;
+}
+
+/* ---------- عملیات ---------- */
+async function act(a,btn){
+  const card=btn.closest("[data-id]"),err=m=>{const e=(card||$("#main")).querySelector(".err");if(e)e.textContent=m};
+  const post=async p=>{btn.disabled=true;err("");try{await q(p);return true}catch(e){err(fe(e));btn.disabled=false;tick();return false}};
+  if(a=="accept"){
+    const price=num(card.querySelector(".pr").value);
+    if(!price)return err("کرایه را وارد کنید.");
+    if(await post(sb.rpc("accept_ride",{p_id:card.dataset.id,p_price:price,p_eta:+card.querySelector(".eta").value}))){sig="x";tick()}
+  }
+  else if(a=="reject"){
+    if(await post(sb.rpc("reject_ride",{p_id:card.dataset.id}))){sig="x";tick()}
+  }
+  else if(a=="next"){
+    if(active.status=="started"){fin=true;return main()}
+    if(await post(sb.rpc("set_ride_status",{p_id:active.id,p_status:active.status=="accepted"?"arrived":"started"}))){sig="x";tick()}
+  }
+  else if(a=="back"){fin=false;main()}
+  else if(a=="done"){
+    const price=num($("#fp").value);
+    if(!price)return err("کرایه نهایی را وارد کنید.");
+    if(await post(sb.rpc("set_ride_status",{p_id:active.id,p_status:"done",p_price:price}))){fin=false;sig="x";toast("سفر ثبت شد.");tick()}
+  }
+  else if(a=="cancel"){
+    if(!confirm("سفر لغو شود؟"))return;
+    if(await post(sb.rpc("cancel_ride",{p_id:active.id}))){fin=false;sig="x";tick()}
   }
 }
-function gUrl(m){return 'https://www.google.com/maps/dir/?api=1&origin='+m.oc[0]+','+m.oc[1]+'&destination='+m.dc[0]+','+m.dc[1]}
-function bUrl(m){return 'https://balad.ir/directions/driving?origin='+m.oc[0]+','+m.oc[1]+'&destination='+m.dc[0]+','+m.dc[1]}
-function popHtml(m){
-  return '<div dir="rtl" style="font-size:13px;line-height:1.8"><b>'+esc(m.name)+'</b><br>از: '+esc(m.o)+'<br>به: '+esc(m.d)+'<br>'+
-  '<a href="'+gUrl(m)+'" target="_blank">مسیر در گوگل مپ</a> | <a href="'+bUrl(m)+'" target="_blank">مسیر در بلد</a><br>'+
-  '<button class="mini" onclick="accept(\''+m.id+'\')">قبول سفر</button></div>';
-}
-function render(){
-  const a=Object.values(reqs).sort((x,y)=>y.t-x.t);
-  $('cnt').textContent=a.length?'('+a.length+')':'';
-  $('reqList').innerHTML=a.length?a.map(m=>'<div class="req"><b>'+esc(m.name)+'</b> <small style="color:var(--m)">'+new Date(m.t).toLocaleTimeString('fa-IR')+'</small><br>از: '+esc(m.o)+'<br>به: '+esc(m.d)+'<br>'+
-   '<button class="mini alt" onclick="focusReq(\''+m.id+'\')">نمایش روی نقشه</button>'+
-   '<a class="mini" style="background:var(--d);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;padding:8px 12px" href="'+bUrl(m)+'" target="_blank">بلد</a>'+
-   '<a class="mini" style="background:var(--d);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;padding:8px 12px" href="'+gUrl(m)+'" target="_blank">گوگل مپ</a>'+
-   '<button class="mini" onclick="accept(\''+m.id+'\')">قبول سفر</button></div>').join(''):'<div class="empty">درخواستی وجود ندارد</div>';
-}
-function focusReq(id){const m=reqs[id];if(!m)return;window.scrollTo(0,0);map.flyTo(m.oc,13);markers[id].openPopup()}
-function removeReq(id){if(markers[id]){map.removeLayer(markers[id]);delete markers[id]}delete reqs[id];render()}
-function accept(id){
-  const m=reqs[id];if(!m)return;
-  done[id]=1;
-  fetch('https://ntfy.sh/'+TOPIC,{method:'POST',body:JSON.stringify({type:'accept',id,driver:user.fn+' '+user.ln})}).catch(()=>{});
-  const t=get('aiond_trips',[]);t.unshift({t:Date.now(),p:m.name,o:m.o,d:m.d});set('aiond_trips',t.slice(0,100));
-  addNotif('سفر '+m.name+' را قبول کردید');
-  map.closePopup();removeReq(id);
-  toast('سفر قبول شد؛ مسیر را باز می کنم');
-  window.open(bUrl(m),'_blank');
-}
-setInterval(()=>{const n=Date.now();Object.values(reqs).forEach(m=>{if(n-m.t>EXPIRE)removeReq(m.id)})},30000);
 
-user=get('aiond_user',null);
-if(user)enter();
+/* ---------- پنل‌ها ---------- */
+async function panel(p){
+  let t="",b="";
+  if(p=="support"){t="پیام به پشتیبانی";b=`<p>برای ارتباط با پشتیبانی تماس بگیرید یا پیام بدهید:</p>`+SUPPORT.map(n=>`<div class="item"><a class="call" href="tel:${n}">${n}</a></div>`).join("")}
+  if(p=="earn"){t="درآمد من";b=`<div id="pl"><p class="mute">در حال بارگذاری…</p></div>`}
+  if(p=="trips"){t="سفرهای انجام‌شده";b=`<div id="pl"><p class="mute">در حال بارگذاری…</p></div>`}
+  if(p=="about"){t="درباره آیون سفیر";b=`<p>آیون سفیر برنامه سفیران آیون اپ است. درخواست مسافر را می‌بینید، کرایه و زمان رسیدن را مشخص می‌کنید و سفرها و درآمدتان را دنبال می‌کنید.</p><p class="mute">نسخه ۲٫۱</p>`}
+  const d=document.createElement("div");d.className="panel";
+  d.innerHTML=`<div class="in"><h2 style="margin:8px 0 16px">${t}</h2>${b}<button class="btn alt" id="bk">بازگشت</button></div>`;
+  d.querySelector("#bk").onclick=()=>d.remove();document.body.append(d);
+  const pl=d.querySelector("#pl");if(!pl)return;
+  try{
+    if(p=="earn"){
+      const s=await q(sb.rpc("driver_stats"));
+      pl.innerHTML=`<div class="item"><small>امروز</small><b>${fa(s.today_income)} تومان</b> · ${fa(s.today_trips)} سفر</div>
+        <div class="item"><small>مجموع</small><b>${fa(s.total_income)} تومان</b> · ${fa(s.total_trips)} سفر</div>`;
+    }else{
+      const l=await q(sb.from("rides").select(RS).eq("driver_id",me.id).order("created_at",{ascending:false}).limit(50));
+      pl.innerHTML=l.length?l.map(x=>`<div class="item"><b>${esc(x.from_name)} ← ${esc(x.to_name)}</b><small>${esc((x.passenger||{}).name||x.passenger_name||"")} · ${fa(x.price)} تومان · ${x.status=="done"?"انجام شد":x.status=="cancelled"?"لغو شد":x.status} · ${new Date(x.created_at).toLocaleString("fa-IR")}</small></div>`).join(""):`<p class="mute">هنوز سفری ثبت نشده است. بعد از پایان هر سفر، اینجا می‌بینید.</p>`;
+    }
+  }catch(e){pl.innerHTML=`<p class="err">${esc(fe(e))}</p>`}
+}
+boot();
 </script>
 </body>
 </html>
